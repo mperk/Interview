@@ -2,7 +2,7 @@
 using Abp.Organizations;
 using System.ComponentModel.DataAnnotations;
 
-namespace Interview.Organizations.Dto
+namespace Interview.OrganizationUnits.Dto
 {
     public class OrganizationUnitDto : EntityDto<long>
     {
@@ -13,6 +13,8 @@ namespace Interview.Organizations.Dto
         [Required]
         [StringLength(OrganizationUnit.MaxDisplayNameLength)]
         public string DisplayName { get; set; }
+
+        public long? ParentId { get; set; }
 
     }
 }

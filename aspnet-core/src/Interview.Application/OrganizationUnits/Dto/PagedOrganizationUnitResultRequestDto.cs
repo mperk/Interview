@@ -1,6 +1,6 @@
 ﻿using Abp.Application.Services.Dto;
 
-namespace Interview.Organizations.Dto
+namespace Interview.OrganizationUnits.Dto
 {
     public class PagedOrganizationUnitResultRequestDto : PagedResultRequestDto
     {

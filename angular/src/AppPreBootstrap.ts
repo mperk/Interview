@@ -45,6 +45,8 @@ export class AppPreBootstrap {
     }
 
     private static getUserConfiguration(callback: () => void): JQueryPromise<any> {
+        console.log(abp.utils.getCookieValue('Abp.Localization.CultureName'));
+
         return abp.ajax({
             url: AppConsts.remoteServiceBaseUrl + '/AbpUserConfiguration/GetAll',
             method: 'GET',
@@ -55,7 +57,6 @@ export class AppPreBootstrap {
             }
         }).done(result => {
             $.extend(true, abp, result);
-
             abp.clock.provider = this.getCurrentClockProvider(result.clock.provider);
 
             moment.locale(abp.localization.currentLanguage.name);

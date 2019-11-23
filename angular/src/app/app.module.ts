@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientJsonpModule } from '@angular/common/http';
+import { HttpClientJsonpModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 
 import { ModalModule } from 'ngx-bootstrap';
@@ -37,6 +37,9 @@ import { CreateUserDialogComponent } from '@app/users/create-user/create-user-di
 import { EditUserDialogComponent } from '@app/users/edit-user/edit-user-dialog.component';
 import { ChangePasswordComponent } from './users/change-password/change-password.component';
 import { ResetPasswordDialogComponent } from './users/reset-password/reset-password.component';
+import { OrganizationUnitsComponent } from './organization-units/organization-units.component';
+import { ModalOuComponent } from './organization-units/modal-ou/modal-ou.component';
+import { AbpHttpInterceptor } from 'abp-ng2-module/dist/src/abpHttpInterceptor';
 
 @NgModule({
   declarations: [
@@ -62,7 +65,9 @@ import { ResetPasswordDialogComponent } from './users/reset-password/reset-passw
     CreateUserDialogComponent,
     EditUserDialogComponent,
     ChangePasswordComponent,
-    ResetPasswordDialogComponent
+    ResetPasswordDialogComponent,
+    OrganizationUnitsComponent,
+    ModalOuComponent
   ],
   imports: [
     CommonModule,
@@ -88,7 +93,9 @@ import { ResetPasswordDialogComponent } from './users/reset-password/reset-passw
     // users
     CreateUserDialogComponent,
     EditUserDialogComponent,
-    ResetPasswordDialogComponent
+    ResetPasswordDialogComponent,
+    // organization units
+    ModalOuComponent
   ]
 })
 export class AppModule {}
