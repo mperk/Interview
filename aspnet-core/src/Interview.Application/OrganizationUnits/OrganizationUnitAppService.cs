@@ -90,5 +90,10 @@ namespace Interview.OrganizationUnits
             return ObjectMapper.Map<List<UserDto>>(users);
         }
 
+        public async Task MoveAsync(long id, long? parentId)
+        {
+            await _organizationManager.MoveAsync(id, parentId);
+        }
+
     }
 }

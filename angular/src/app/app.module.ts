@@ -41,6 +41,7 @@ import { OrganizationUnitsComponent } from './organization-units/organization-un
 import { ModalOuComponent } from './organization-units/modal-ou/modal-ou.component';
 import { HighlightDirective } from './organization-units/directives/highlight.directive';
 import { UsersInOuComponent } from './organization-units/users-in-ou/users-in-ou.component';
+import { ModalAddUsersComponent } from './organization-units/users-in-ou/modal-add-users/modal-add-users.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { UsersInOuComponent } from './organization-units/users-in-ou/users-in-ou
     OrganizationUnitsComponent,
     ModalOuComponent,
     HighlightDirective,
-    UsersInOuComponent
+    UsersInOuComponent,
+    ModalAddUsersComponent
 
   ],
   imports: [

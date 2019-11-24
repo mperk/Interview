@@ -1,0 +1,60 @@
+<div class="modal-dialog modal-lg">
+    <h1 mat-dialog-title>{{ "Select users" | localize }}</h1>
+    <mat-dialog-content>
+        <table class="table table-hover table-striped" [busy]="isTableLoading">
+            <thead>
+                <tr>
+                    <th>{{ "UserName" | localize }}</th>
+                    <th>{{ "FullName" | localize }}</th>
+                    <th>{{ "EmailAddress" | localize }}</th>
+                    <th>
+                        <div style="text-align:center">{{ "IsActive" | localize }}</div>
+                    </th>
+                    <th>{{ "Actions" | localize }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="
+                        let user of (users
+                          | paginate
+                            : {
+                                id: 'server',
+                                itemsPerPage: pageSize,
+                                currentPage: pageNumber,
+                                totalItems: totalItems
+                              })
+                      ">
+                    <td>{{ user.userName }}</td>
+                    <td>{{ user.fullName }}</td>
+                    <td>{{ user.emailAddress }}</td>
+                    <td align="center">
+                        <i class="material-icons check_box" *ngIf="user.isActive">
+                            check_box
+                        </i>
+                        <i class="material-icons indeterminate_check_box" *ngIf="!user.isActive">
+                            indeterminate_check_box
+                        </i>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger waves-effect" (click)="delete(user)">
+                            <span>{{ "Delete" | localize }}</span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="abp-pagination-controls-wrapper" *ngIf="totalItems > pageSize">
+            <abp-pagination-controls (pageChange)="getDataPage($event)" id="server">
+            </abp-pagination-controls>
+        </div>
+    </mat-dialog-content>
+    <div mat-dialog-actions align="end">
+        <button mat-button type="button" [disabled]="saving" (click)="close(false)">
+            {{ "Cancel" | localize }}
+        </button>
+        <button mat-flat-button type="submit" flex="15" color="primary"
+            [disabled]="!createOrganizationUnitForm.form.valid || saving">
+            {{ "Save" | localize }}
+        </button>
+    </div>
+</div>

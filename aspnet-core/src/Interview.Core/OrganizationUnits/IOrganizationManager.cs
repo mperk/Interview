@@ -11,5 +11,7 @@ namespace Interview.OrganizationUnits
         Task<OrganizationUnit> UpdateDisplayNameAsync(long id, string displayName);
 
         Task DeleteOrganizationUnitAsync(long id);
+
+        Task MoveAsync(long id, long? parentId);
     }
 }

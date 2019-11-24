@@ -23,8 +23,7 @@ namespace Interview.OrganizationUnits
 
         public async Task CreateAsync(OrganizationUnit organizationUnit)
         {
-            var code = await GetNextCodeAsync(organizationUnit.ParentId);
-            organizationUnit.Code = code;
+            organizationUnit.Code = await GetNextCodeAsync(organizationUnit.ParentId);
             await _organizationUnitRepository.InsertAsync(organizationUnit);
         }
 
@@ -32,14 +31,17 @@ namespace Interview.OrganizationUnits
         {
             var children = await _organizationUnitRepository.GetAllListAsync(x => x.ParentId == parentId);
             var lastChild = children.OrderBy(x => x.Code).LastOrDefault();
-            if(lastChild == null)
+            if (lastChild == null)
             {
-                var parentCode = await GetCodeOrDefaultAsync(parentId ?? 0);
-                if(parentCode == null)
+                if (parentId != null)
+                {
+                    var parentCode = await GetCodeOrDefaultAsync(parentId.Value);
+                    return parentCode + "." + GenerateNextCodeAsync("0");
+                }
+                else
                 {
                     return GenerateNextCodeAsync("0");
                 }
-                return parentCode + "." + GenerateNextCodeAsync("0");
             }
             return GenerateNextCodeAsync(lastChild.Code);
         }
@@ -55,7 +57,7 @@ namespace Interview.OrganizationUnits
             var lastPart = GetLastPart(code);
             var parts = code.Split(".");
             parts[parts.Length - 1] = CreateNextLastPart(lastPart);
-            return String.Join(".", parts); 
+            return String.Join(".", parts);
         }
 
         public string CreateNextLastPart(string lastPart)
@@ -84,7 +86,31 @@ namespace Interview.OrganizationUnits
 
         public async Task MoveAsync(long id, long? parentId)
         {
+            var organizationUnit = await _organizationUnitRepository.FirstOrDefaultAsync(id);
+            var children = await FindChildrenAsync(id);
+            organizationUnit.ParentId = parentId;
+            organizationUnit.Code = await GetNextCodeAsync(organizationUnit.ParentId);
 
+            foreach (var child in children)
+            {
+                var parts = child.Code.Split(".");
+                child.Code = organizationUnit.Code + "." + parts[parts.Length - 1];
+            }
+
+            await _organizationUnitRepository.UpdateAsync(organizationUnit);
+        }
+
+        public async Task<List<OrganizationUnit>> FindChildrenAsync(long? id)
+        {
+            if (!id.HasValue)
+            {
+                return await _organizationUnitRepository.GetAllListAsync(x => x.ParentId == id);
+            }
+            else
+            {
+                var parentCode = await GetCodeOrDefaultAsync(id.Value);
+                return await _organizationUnitRepository.GetAllListAsync(x => x.Code.StartsWith(parentCode) && x.Id != id.Value);
+            }
         }
     }
 }
