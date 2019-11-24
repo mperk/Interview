@@ -39,7 +39,7 @@ import { ChangePasswordComponent } from './users/change-password/change-password
 import { ResetPasswordDialogComponent } from './users/reset-password/reset-password.component';
 import { OrganizationUnitsComponent } from './organization-units/organization-units.component';
 import { ModalOuComponent } from './organization-units/modal-ou/modal-ou.component';
-import { AbpHttpInterceptor } from 'abp-ng2-module/dist/src/abpHttpInterceptor';
+import { HighlightDirective } from './organization-units/directives/highlight.directive';
 
 @NgModule({
   declarations: [
@@ -67,7 +67,9 @@ import { AbpHttpInterceptor } from 'abp-ng2-module/dist/src/abpHttpInterceptor';
     ChangePasswordComponent,
     ResetPasswordDialogComponent,
     OrganizationUnitsComponent,
-    ModalOuComponent
+    ModalOuComponent,
+    HighlightDirective
+
   ],
   imports: [
     CommonModule,
