@@ -40,6 +40,7 @@ import { ResetPasswordDialogComponent } from './users/reset-password/reset-passw
 import { OrganizationUnitsComponent } from './organization-units/organization-units.component';
 import { ModalOuComponent } from './organization-units/modal-ou/modal-ou.component';
 import { HighlightDirective } from './organization-units/directives/highlight.directive';
+import { UsersInOuComponent } from './organization-units/users-in-ou/users-in-ou.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { HighlightDirective } from './organization-units/directives/highlight.di
     ResetPasswordDialogComponent,
     OrganizationUnitsComponent,
     ModalOuComponent,
-    HighlightDirective
+    HighlightDirective,
+    UsersInOuComponent
 
   ],
   imports: [

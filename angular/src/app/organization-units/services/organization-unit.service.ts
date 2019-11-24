@@ -38,4 +38,10 @@ export class OrganizationUnitService {
     addSubUnit(displayName: string, parentId: number): Observable<any> {
         return this.create(displayName, parentId);
     }
+
+    getUsers(input, id: number): Observable<any> {
+        return this.http.get('/api/services/app/OrganizationUnit/GetUsersInOrganizationUnit?id='+id, {
+            body: {input: input}
+        });
+    }
 }

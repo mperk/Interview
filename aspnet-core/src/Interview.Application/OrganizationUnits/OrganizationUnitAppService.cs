@@ -4,8 +4,11 @@ using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Organizations;
 using Abp.UI;
+using Interview.Authorization.Users;
 using Interview.Extensions;
 using Interview.OrganizationUnits.Dto;
+using Interview.OrganizationUnits.Users;
+using Interview.Users.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,12 +22,15 @@ namespace Interview.OrganizationUnits
     {
         private readonly IRepository<OrganizationUnit, long> _repository;
         private readonly IOrganizationManager _organizationManager;
+        private readonly IUserManagerInOrganizationUnit _userManagerInOrganizationUnit;
 
         public OrganizationUnitAppService(IRepository<OrganizationUnit, long> repository,
-            IOrganizationManager organizationManager)
+            IOrganizationManager organizationManager,
+            IUserManagerInOrganizationUnit userManagerInOrganizationUnit)
         {
             _repository = repository;
             _organizationManager = organizationManager;
+            _userManagerInOrganizationUnit = userManagerInOrganizationUnit;
         }
 
         public async Task Create(CreateOrganizationUnitDto input)
@@ -76,6 +82,12 @@ namespace Interview.OrganizationUnits
             }
 
             return organizationUnit.MapTo<OrganizationUnitDto>();
+        }
+
+        public async Task<List<UserDto>> GetUsersInOrganizationUnit(PagedUsersInOrganizationUnitRequestDto input)
+        {
+            var users = await _userManagerInOrganizationUnit.GetUsersInOrganizationUnitAsync(input, input.organizationUnitId);
+            return ObjectMapper.Map<List<UserDto>>(users);
         }
 
     }

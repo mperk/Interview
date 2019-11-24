@@ -1,6 +1,9 @@
+using Abp.Application.Services.Dto;
 using Abp.Organizations;
 using AutoMapper;
+using Interview.Authorization.Users;
 using Interview.Extensions;
+using Interview.Users.Dto;
 using System.Collections.Generic;
 
 namespace Interview.OrganizationUnits.Dto
@@ -16,6 +19,7 @@ namespace Interview.OrganizationUnits.Dto
             CreateMap<OrganizationUnit, OrganizationUnitDto>().ForMember(x => x.Children, x => x.MapFrom(y => y.Children));
 
             CreateMap<TreeItem<OrganizationUnit>, TreeItem<OrganizationUnitDto>>().ForMember(x => x.Children, x=> x.MapFrom(y => y.Children));
+            
         }
     }
 }

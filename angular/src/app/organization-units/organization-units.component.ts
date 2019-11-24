@@ -7,6 +7,7 @@ import { ModalOuComponent } from './modal-ou/modal-ou.component';
 import { OrganizationUnitService } from './services/organization-unit.service';
 import { AppComponentBase } from '@shared/app-component-base';
 import { NestedTreeControl } from '@angular/cdk/tree';
+import { UserDto } from '@shared/service-proxies/service-proxies';
 
 @Component({
   selector: 'app-organization-units',
@@ -17,6 +18,9 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 export class OrganizationUnitsComponent extends AppComponentBase {
 
   organizationUnits: OrganizationUnitDto[] = [];
+  usersTableStatus = false;
+  users: UserDto[] = [];
+  selectedOrganizationUnit = new OrganizationUnitDto();
   dataSource = new MatTreeNestedDataSource<OrganizationUnitDto>();
   treeControl = new NestedTreeControl<OrganizationUnitDto>(node => node.children);
   hasChild = (_: number, node: OrganizationUnitDto) => !!node.children && node.children.length > 0;
@@ -96,5 +100,19 @@ export class OrganizationUnitsComponent extends AppComponentBase {
         }
       }
     );
+  }
+
+  getUsersInOrganizationUnit(node) {
+    this.selectedOrganizationUnit = node.item;
+    const req = new PagedRequestDto();
+    req.maxResultCount = 10;
+    req.skipCount = 0;
+
+    this._organizationUnitService.getUsers(req, node.item.id)
+      .subscribe((response) => {
+        this.users = response.result;
+        this.usersTableStatus = true;
+      });
+
   }
 }
