@@ -51,6 +51,18 @@ namespace Interview.OrganizationUnits
             return parts[parts.Length - 1];
         }
 
+        public async Task<OrganizationUnit> UpdateDisplayNameAsync(long id, string displayName)
+        {
+            var organizationUnit = await _organizationUnitRepository.GetAsync(id);
+            organizationUnit.DisplayName = displayName;
+            return await _organizationUnitRepository.UpdateAsync(organizationUnit);
+        }
+
+        public async Task DeleteOrganizationUnitAsync(long id)
+        {
+            await _organizationUnitRepository.DeleteAsync(id);
+        }
+
         public async Task MoveAsync(long id, long? parentId)
         {
 

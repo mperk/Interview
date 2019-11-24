@@ -1,5 +1,6 @@
 export class OrganizationUnitDto {
     
     id: number;
-    displayName: string
+    displayName: string;
+    children: OrganizationUnitDto[]
 }

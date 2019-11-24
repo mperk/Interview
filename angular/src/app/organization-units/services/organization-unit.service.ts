@@ -9,42 +9,29 @@ import { Observable } from 'rxjs';
 export class OrganizationUnitService {
     constructor(private http: HttpClientService) { }
 
-    createOrganizationUnit(displayName: string, parentId?: number): Observable<any> {
-        return this.http.post('/api/services/app/OrganizationUnit/Create/', {
+    create(displayName: string, parentId?: number): Observable<any> {
+        return this.http.post('/api/services/app/OrganizationUnit/Create', {
             ParentId: parentId,
             DisplayName: displayName
         });
     }
 
-    // deleteRoleToUser(userId: string, roleId: number): any {
-    //     const options = {
-    //         headers: new HttpHeaders({
-    //             'Content-Type': 'application/json',
-    //         }),
-    //         body: {
-    //             ROLE_ID: [roleId]
-    //         },
-    //     };
-    //     this.http.delete('/ums/DeleteRolesFromUser/' + userId, options)
-    //         .subscribe();
-    // }
+    getList(): Observable<any> {
+        return this.http.get('/api/services/app/OrganizationUnit/GetList');
+    }
 
-    // addPermissionsToUser(userId: string, permissionIds) {
-    //     this.http.post('/ums/UserPermissions/' + userId, {
-    //         PERMISSION_ID: permissionIds
-    //     }).subscribe();
-    // }
+    getTreeList(): Observable<any> {
+        return this.http.get('/api/services/app/OrganizationUnit/GetTreeList');
+    }
 
-    // deletePermissionsFromUser(userId: string, permissionIds) {
-    //     const options = {
-    //         headers: new HttpHeaders({
-    //             'Content-Type': 'application/json',
-    //         }),
-    //         body: {
-    //             PERMISSION_ID: permissionIds
-    //         },
-    //     };
-    //     this.http.delete('/ums/UserPermissions/' + userId, options)
-    //         .subscribe();
-    // }
+    updateDisplayName(id: number, displayName: string): Observable<any> {
+        return this.http.put('/api/services/app/OrganizationUnit/UpdateDisplayName', {
+            Id: id,
+            DisplayName: displayName
+        });
+    }
+
+    delete(id: number): Observable<any> {
+        return this.http.delete('/api/services/app/OrganizationUnit/Delete?id='+id);
+    }
 }

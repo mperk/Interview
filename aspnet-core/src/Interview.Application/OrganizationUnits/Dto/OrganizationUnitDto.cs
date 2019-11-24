@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Organizations;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Interview.OrganizationUnits.Dto
@@ -15,6 +16,8 @@ namespace Interview.OrganizationUnits.Dto
         public string DisplayName { get; set; }
 
         public long? ParentId { get; set; }
+
+        public List<OrganizationUnitDto> Children { get; set; }
 
     }
 }

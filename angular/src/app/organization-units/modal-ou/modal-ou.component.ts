@@ -20,35 +20,29 @@ export class ModalOuComponent extends AppComponentBase implements OnInit {
   }
 
   ngOnInit() {
+    if (this.data) {
+      this.organizationUnit.id = this.data.organizationUnit.id;
+      this.organizationUnit.displayName = this.data.organizationUnit.displayName;
+    }
   }
 
   save(): void {
-    console.log(this.data)
-    if (this.data === undefined || this.data === null) {
-      this._organizationUnitService.createOrganizationUnit(
-        this.organizationUnit.displayName, null).subscribe((result) => {
+    if (this.data) {
+      // update
+      this._organizationUnitService.updateDisplayName(this.organizationUnit.id, this.organizationUnit.displayName)
+        .subscribe((result) => {
+          this.notify.info(this.l('SavedSuccessfully'));
+          this.close(true);
+        });
+    } else {
+      // create
+      this._organizationUnitService.create(this.organizationUnit.displayName, null)
+        .subscribe((result) => {
           this.notify.info(this.l('SavedSuccessfully'));
           this.close(true);
         });
     }
-    // this.saving = true;
 
-    // this.role.grantedPermissions = this.getCheckedPermissions();
-
-    // const role_ = new CreateRoleDto();
-    // role_.init(this.role);
-
-    // this._roleService
-    //   .create(role_)
-    //   .pipe(
-    //     finalize(() => {
-    //       this.saving = false;
-    //     })
-    //   )
-    //   .subscribe(() => {
-    //     this.notify.info(this.l('SavedSuccessfully'));
-    //     this.close(true);
-    //   });
   }
 
   close(result: any): void {

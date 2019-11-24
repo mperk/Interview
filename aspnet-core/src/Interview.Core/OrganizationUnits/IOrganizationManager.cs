@@ -7,5 +7,9 @@ namespace Interview.OrganizationUnits
     public interface IOrganizationManager : IDomainService
     {
         Task CreateAsync(OrganizationUnit organizationUnit);
+
+        Task<OrganizationUnit> UpdateDisplayNameAsync(long id, string displayName);
+
+        Task DeleteOrganizationUnitAsync(long id);
     }
 }
