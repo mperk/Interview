@@ -24,10 +24,6 @@ namespace Interview.OrganizationUnits
         public async Task CreateAsync(OrganizationUnit organizationUnit)
         {
             var code = await GetNextCodeAsync(organizationUnit.ParentId);
-            if(organizationUnit.ParentId != null)
-            {
-                code = await GetCodeAsync(organizationUnit.ParentId.Value) + "." + code;
-            }
             organizationUnit.Code = code;
             await _organizationUnitRepository.InsertAsync(organizationUnit);
         }
@@ -38,25 +34,28 @@ namespace Interview.OrganizationUnits
             var lastChild = children.OrderBy(x => x.Code).LastOrDefault();
             if(lastChild == null)
             {
-                return GenerateNextCodeAsync("0");
+                var parentCode = await GetCodeOrDefaultAsync(parentId ?? 0);
+                if(parentCode == null)
+                {
+                    return GenerateNextCodeAsync("0");
+                }
+                return parentCode + "." + GenerateNextCodeAsync("0");
             }
             return GenerateNextCodeAsync(lastChild.Code);
         }
 
-        public async Task<string> GetCodeAsync(long id)
+        public async Task<string> GetCodeOrDefaultAsync(long id)
         {
             var ou = await _organizationUnitRepository.FirstOrDefaultAsync(id);
-            if(ou == null)
-            {
-                throw new UserFriendlyException(L("OrganizationUnitNotFound", id));
-            }
-            return ou.Code;
+            return ou?.Code;
         }
 
         public string GenerateNextCodeAsync(string code)
         {
             var lastPart = GetLastPart(code);
-            return code.Replace(lastPart, CreateNextLastPart(lastPart));
+            var parts = code.Split(".");
+            parts[parts.Length - 1] = CreateNextLastPart(lastPart);
+            return String.Join(".", parts); 
         }
 
         public string CreateNextLastPart(string lastPart)
