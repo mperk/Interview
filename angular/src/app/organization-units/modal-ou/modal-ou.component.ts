@@ -20,21 +20,30 @@ export class ModalOuComponent extends AppComponentBase implements OnInit {
   }
 
   ngOnInit() {
-    if (this.data) {
+    if (this.data && this.data.organizationUnit) {
+      // for update
       this.organizationUnit.id = this.data.organizationUnit.id;
       this.organizationUnit.displayName = this.data.organizationUnit.displayName;
     }
   }
 
   save(): void {
-    if (this.data) {
+    if (this.data && this.data.organizationUnit) {
       // update
       this._organizationUnitService.updateDisplayName(this.organizationUnit.id, this.organizationUnit.displayName)
         .subscribe((result) => {
           this.notify.info(this.l('SavedSuccessfully'));
           this.close(true);
         });
-    } else {
+    } else if (this.data && this.data.parentOrganizationUnit){
+      // add sub-unit
+      this._organizationUnitService.addSubUnit(this.organizationUnit.displayName, this.data.parentOrganizationUnit.id)
+        .subscribe((result) => {
+          this.notify.info(this.l('SavedSuccessfully'));
+          this.close(true);
+        });
+    }
+    else {
       // create
       this._organizationUnitService.create(this.organizationUnit.displayName, null)
         .subscribe((result) => {

@@ -4,6 +4,7 @@ using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Organizations;
 using Abp.UI;
+using Interview.Extensions;
 using Interview.OrganizationUnits.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -52,15 +53,16 @@ namespace Interview.OrganizationUnits
             return new ListResultDto<OrganizationUnitDto>(organizationUnits.MapTo<List<OrganizationUnitDto>>());
         }
 
-        public async Task<ListResultDto<OrganizationUnitDto>> GetTreeList()
+        public async Task<List<TreeItem<OrganizationUnitDto>>> GetTreeList()
         {
-            var organizationUnits = await _repository
+            var organizationUnits = _repository
                 .GetAll()
                 .Include(x => x.Children)
                 .OrderBy(x => x.Code)
-                .ToListAsync();
-
-            return new ListResultDto<OrganizationUnitDto>(organizationUnits.MapTo<List<OrganizationUnitDto>>());
+                .AsEnumerable();
+            var organizationUnitTree = organizationUnits.GenerateTree(x => x.Id, x => x.ParentId).ToList();
+            var result= new List<TreeItem<OrganizationUnitDto>>(organizationUnitTree.MapTo<List<TreeItem<OrganizationUnitDto>>>());
+            return result;
         }
 
         public async Task<OrganizationUnitDto> Get(EntityDto<long> input)

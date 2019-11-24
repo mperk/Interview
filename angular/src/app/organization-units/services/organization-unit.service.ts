@@ -34,4 +34,8 @@ export class OrganizationUnitService {
     delete(id: number): Observable<any> {
         return this.http.delete('/api/services/app/OrganizationUnit/Delete?id='+id);
     }
+
+    addSubUnit(displayName: string, parentId: number): Observable<any> {
+        return this.create(displayName, parentId);
+    }
 }

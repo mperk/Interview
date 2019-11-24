@@ -1,6 +1,7 @@
 ﻿using Abp.Domain.Repositories;
 using Abp.Domain.Services;
 using Abp.Organizations;
+using Abp.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,15 +23,34 @@ namespace Interview.OrganizationUnits
 
         public async Task CreateAsync(OrganizationUnit organizationUnit)
         {
-            organizationUnit.Code = await GetNextCodeAsync(organizationUnit.ParentId);
+            var code = await GetNextCodeAsync(organizationUnit.ParentId);
+            if(organizationUnit.ParentId != null)
+            {
+                code = await GetCodeAsync(organizationUnit.ParentId.Value) + "." + code;
+            }
+            organizationUnit.Code = code;
             await _organizationUnitRepository.InsertAsync(organizationUnit);
         }
 
         public async Task<string> GetNextCodeAsync(long? parentId)
         {
             var children = await _organizationUnitRepository.GetAllListAsync(x => x.ParentId == parentId);
-            string maxCode = children.OrderBy(x => x.Code).LastOrDefault().Code;
-            return GenerateNextCodeAsync(maxCode);
+            var lastChild = children.OrderBy(x => x.Code).LastOrDefault();
+            if(lastChild == null)
+            {
+                return GenerateNextCodeAsync("0");
+            }
+            return GenerateNextCodeAsync(lastChild.Code);
+        }
+
+        public async Task<string> GetCodeAsync(long id)
+        {
+            var ou = await _organizationUnitRepository.FirstOrDefaultAsync(id);
+            if(ou == null)
+            {
+                throw new UserFriendlyException(L("OrganizationUnitNotFound", id));
+            }
+            return ou.Code;
         }
 
         public string GenerateNextCodeAsync(string code)

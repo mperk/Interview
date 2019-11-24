@@ -38,29 +38,24 @@ export class OrganizationUnitsComponent extends AppComponentBase {
   protected list(): void {
     this._organizationUnitService.getTreeList()
       .subscribe((response) => {
-        this.organizationUnits = response.result.items;
+        this.organizationUnits = response.result;
         this.dataSource.data = this.organizationUnits;
       });
   }
 
   createOrganizationUnit(): void {
-    this.showOrganizationUnitDialog();
+    let createOrEditOUDialog = this._dialog.open(ModalOuComponent);
+    createOrEditOUDialog.afterClosed().subscribe(result => {
+      if (result) {
+        this.list();
+      }
+    });
   }
 
-  editOrganizationUnit(organizationUnit: OrganizationUnitDto): void {
-    this.showOrganizationUnitDialog(organizationUnit);
-  }
-
-  showOrganizationUnitDialog(organizationUnit?: OrganizationUnitDto): void {
-    let createOrEditOUDialog;
-    if (organizationUnit === undefined) {
-      createOrEditOUDialog = this._dialog.open(ModalOuComponent);
-    } else {
-      createOrEditOUDialog = this._dialog.open(ModalOuComponent, {
-        data: { organizationUnit: organizationUnit }
-      });
-    }
-
+  editOrganizationUnit(node): void {
+    let createOrEditOUDialog = this._dialog.open(ModalOuComponent, {
+      data: { organizationUnit: node.item }
+    });
     createOrEditOUDialog.afterClosed().subscribe(result => {
       if (result) {
         this.list();
@@ -77,15 +72,23 @@ export class OrganizationUnitsComponent extends AppComponentBase {
   }
 
 
-  addSubOrganizationUnit(organizationUnit: OrganizationUnitDto) {
+  addSubOrganizationUnit(node) {
+    let createOrEditOUDialog = this._dialog.open(ModalOuComponent, {
+      data: { parentOrganizationUnit: node.item }
+    });
+    createOrEditOUDialog.afterClosed().subscribe(result => {
+      if (result) {
+        this.list();
+      }
+    });
   }
 
-  deleteOrganizationUnit(organizationUnit: OrganizationUnitDto): void {
+  deleteOrganizationUnit(node): void {
     abp.message.confirm(
-      this.l('', organizationUnit.displayName),
+      this.l('', node.item.displayName),
       (result: boolean) => {
         if (result) {
-          this._organizationUnitService.delete(organizationUnit.id)
+          this._organizationUnitService.delete(node.item.id)
             .subscribe((result) => {
               this.list();
               abp.notify.success(this.l('SuccessfullyDeleted'));
