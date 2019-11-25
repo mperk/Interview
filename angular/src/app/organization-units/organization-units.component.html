@@ -58,11 +58,11 @@
 
             </div>
             <div class="body table-responsive">
-                <app-users-in-ou [organizationUnitId]=selectedOrganizationUnit.id [users]=users
-                    *ngIf="usersTableStatus" ></app-users-in-ou>
-                <p *ngIf="!usersTableStatus">
+                <app-users-in-ou #usersComponent [organizationUnitId]=selectedOrganizationUnit.id [users]=users
+                    ></app-users-in-ou>
+                <!-- <p *ngIf="!usersTableStatus">
                     Select an organization unit to see members.
-                </p>
+                </p> -->
             </div>
         </div>
     </div>

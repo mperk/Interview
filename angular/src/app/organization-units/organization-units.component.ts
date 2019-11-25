@@ -1,5 +1,4 @@
-import { Component, OnInit, Injector, ViewChild, EventEmitter, Output } from '@angular/core';
-import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listing-component-base';
+import { Component, OnInit, Injector, ViewChild } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { OrganizationUnitDto } from './models/organizationUnitDto';
 import { MatDialog, MatTreeNestedDataSource, MatMenuTrigger } from '@angular/material';
@@ -8,7 +7,7 @@ import { OrganizationUnitService } from './services/organization-unit.service';
 import { AppComponentBase } from '@shared/app-component-base';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { UserDto, PagedResultDtoOfUserDto } from '@shared/service-proxies/service-proxies';
-import { ModalAddUsersComponent } from './users-in-ou/modal-add-users/modal-add-users.component';
+import { UsersInOuComponent } from './users-in-ou/users-in-ou.component';
 
 @Component({
   selector: 'app-organization-units',
@@ -16,7 +15,7 @@ import { ModalAddUsersComponent } from './users-in-ou/modal-add-users/modal-add-
   styleUrls: ['./organization-units.component.css'],
   animations: [appModuleAnimation()]
 })
-export class OrganizationUnitsComponent extends AppComponentBase {
+export class OrganizationUnitsComponent extends AppComponentBase{
 
   organizationUnits: OrganizationUnitDto[] = [];
   usersTableStatus = false;
@@ -26,8 +25,8 @@ export class OrganizationUnitsComponent extends AppComponentBase {
   treeControl = new NestedTreeControl<OrganizationUnitDto>(node => node.children);
   hasChild = (_: number, node: OrganizationUnitDto) => !!node.children && node.children.length > 0;
   @ViewChild(MatMenuTrigger, { static: true }) contextMenu: MatMenuTrigger;
+  @ViewChild(UsersInOuComponent, { static: false }) usersComponent: UsersInOuComponent;
   contextMenuPosition = { x: '0px', y: '0px' };
-  @Output() getUsersEvent = new EventEmitter(); // get users component
   constructor(
     injector: Injector,
     private _dialog: MatDialog,
@@ -104,16 +103,9 @@ export class OrganizationUnitsComponent extends AppComponentBase {
   }
 
   getUsersInOrganizationUnit(node) {
-    // this.getUsersEvent.emit(null);
     this.selectedOrganizationUnit = node.item;
-    const req = new PagedRequestDto();
-    req.maxResultCount = 10;
-    req.skipCount = 0;
-
-    this._organizationUnitService.getUsersInOu(req, node.item.id)
-      .subscribe((response) => {
-        this.users = response.result.items;
-        this.usersTableStatus = true;
-      });
+    // this.usersTableStatus = true;
+    this.usersComponent.organizationUnitId = node.item.id;
+    this.usersComponent.refresh();
   }
 }

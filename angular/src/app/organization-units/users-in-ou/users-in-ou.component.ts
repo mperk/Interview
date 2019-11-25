@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Injector } from '@angular/core';
+import { Component, OnInit, Input, Injector, Output, EventEmitter } from '@angular/core';
 import { UserDto } from '@shared/service-proxies/service-proxies';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { PagedRequestDto } from '../../../shared/paged-listing-component-base';
@@ -16,7 +16,6 @@ export class UsersInOuComponent extends PagedListingComponentBase<UserDto> {
 
   @Input() users: UserDto[] = [];
   @Input() organizationUnitId: number;
-
   constructor(injector: Injector,
     private _dialog: MatDialog,
     private _organizationUnitService: OrganizationUnitService) {
@@ -37,7 +36,7 @@ export class UsersInOuComponent extends PagedListingComponentBase<UserDto> {
       )
       .subscribe((response) => {
         this.users = response.result.items;
-        this.showPaging(response, pageNumber);
+        this.showPaging(response.result, pageNumber);
       });
   }
 

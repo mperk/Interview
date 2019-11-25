@@ -15,7 +15,6 @@ export class ModalAddUsersComponent extends PagedListingComponentBase<UserDto> {
 
   users: UserDto[] = [];
   selection = new SelectionModel<UserDto>(true, []);
-  @Output() eventAfterSave: EventEmitter<any> = new EventEmitter<any>();
   constructor(injector: Injector,
     private _organizationUnitService: OrganizationUnitService,
     private _dialogRef: MatDialogRef<ModalAddUsersComponent>,
