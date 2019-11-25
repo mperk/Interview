@@ -45,9 +45,16 @@ namespace Interview.OrganizationUnits
             await _organizationManager.UpdateDisplayNameAsync(input.Id, input.DisplayName);
         }
 
+        [UnitOfWork]
         public async Task Delete(long id)
         {
             await _organizationManager.DeleteOrganizationUnitAsync(id);
+            var userOrganizationUnitIds = (await _userManagerInOrganizationUnit.FindUserOrganizationUnitsAsync(id))
+                                                  .Select(x => x.Id);
+            foreach (var userOrganizationUnitId in userOrganizationUnitIds)
+            {
+                await _userManagerInOrganizationUnit.DeleteUserOrganizationUnitAsync(userOrganizationUnitId);
+            }
         }
 
         public async Task<ListResultDto<OrganizationUnitDto>> GetList()
@@ -78,11 +85,11 @@ namespace Interview.OrganizationUnits
         {
             var userOrganizationUnit = await _userManagerInOrganizationUnit
                                         .FindUserOrganizationUnitAsync(input.TenantId, input.UserId, input.OrganizationUnitId);
-            if(userOrganizationUnit == null)
+            if (userOrganizationUnit == null)
             {
                 throw new UserFriendlyException("Could not found the user, maybe it's deleted.");
             }
-            await _userManagerInOrganizationUnit.DeleteUserFromOrganizationUnitAsync(userOrganizationUnit.Id);
+            await _userManagerInOrganizationUnit.DeleteUserOrganizationUnitAsync(userOrganizationUnit.Id);
         }
 
         public async Task<List<TreeItem<OrganizationUnitDto>>> GetTreeList()

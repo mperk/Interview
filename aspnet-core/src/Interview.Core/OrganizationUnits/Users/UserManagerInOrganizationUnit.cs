@@ -36,9 +36,16 @@ namespace Interview.OrganizationUnits.Users
                         x.OrganizationUnitId == organizationUnitId);
         }
 
-        public async Task DeleteUserFromOrganizationUnitAsync(long id)
+        public async Task DeleteUserOrganizationUnitAsync(long id)
         {
             await _userOrganizationUnitRepository.DeleteAsync(id);
+        }
+
+        public async Task<List<UserOrganizationUnit>> FindUserOrganizationUnitsAsync(long organizationUnitId)
+        {
+            return (await _userOrganizationUnitRepository.GetAllListAsync())
+                .Where(x => x.OrganizationUnitId == organizationUnitId)
+                .ToList();
         }
 
         public async Task<IEnumerable<User>> GetUsersInOrganizationUnitAsync(long organizationUnitId)

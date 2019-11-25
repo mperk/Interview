@@ -13,7 +13,9 @@ namespace Interview.OrganizationUnits.Users
 
         Task<UserOrganizationUnit> FindUserOrganizationUnitAsync(int? tenantId, long userId, long organizationUnitId);
 
-        Task DeleteUserFromOrganizationUnitAsync(long id);
+        Task DeleteUserOrganizationUnitAsync(long id);
+
+        Task<List<UserOrganizationUnit>> FindUserOrganizationUnitsAsync(long organizationUnitId);
 
         Task<IEnumerable<User>> GetUsersInOrganizationUnitAsync(long organizationUnitId);
 
