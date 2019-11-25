@@ -40,10 +40,29 @@ export class OrganizationUnitService {
     }
 
     getUsersInOu(req, id: number): Observable<any> {
-        return this.http.get('/api/services/app/OrganizationUnit/GetUsersInOrganizationUnit?SkipCount=' + req.skipCount + '&MaxResultCount=' + req.maxResultCount + '&OrganizationUnitId='+id);
+        return this.http.get('/api/services/app/OrganizationUnit/GetUsersInOrganizationUnit?SkipCount='
+            + req.skipCount + '&MaxResultCount='
+            + req.maxResultCount
+            + '&OrganizationUnitId=' + id);
     }
 
     getUsersNotInOu(req, id: number): Observable<any> {
-        return this.http.get('/api/services/app/OrganizationUnit/GetUsersNotInOrganizationUnit?SkipCount=' + req.skipCount + '&MaxResultCount=' + req.maxResultCount + '&OrganizationUnitId='+id);
+        return this.http.get('/api/services/app/OrganizationUnit/GetUsersNotInOrganizationUnit?SkipCount='
+            + req.skipCount + '&MaxResultCount='
+            + req.maxResultCount + '&OrganizationUnitId='
+            + id);
+    }
+
+    addUsersInOu(userIds, organizationUnitId) {
+        return this.http.post('/api/services/app/OrganizationUnit/AddUsersToOrganizationUnit', {
+            userIds: userIds,
+            organizationUnitId: organizationUnitId
+        });
+    }
+
+    deleteUsersInOu(userId, organizationUnitId) {
+        return this.http.delete('/api/services/app/OrganizationUnit/DeleteUserFromOrganizationUnit?UserId=' 
+        + userId + '&OrganizationUnitId=' 
+        + organizationUnitId);
     }
 }

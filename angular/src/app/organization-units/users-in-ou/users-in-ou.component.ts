@@ -42,7 +42,18 @@ export class UsersInOuComponent extends PagedListingComponentBase<UserDto> {
   }
 
   protected delete(entity: UserDto): void {
-    throw new Error('Method not implemented.');
+    abp.message.confirm(
+      this.l('', entity.fullName),
+      (result: boolean) => {
+        if (result) {
+          this._organizationUnitService.deleteUsersInOu(entity.id, this.organizationUnitId)
+            .subscribe((response) => {
+              this.refresh();
+              abp.notify.success(this.l('SuccessfullyDeleted'));
+            });
+        }
+      }
+    );
   }
 
   openAddMemberDialog() {

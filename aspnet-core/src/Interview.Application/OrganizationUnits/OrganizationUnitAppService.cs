@@ -2,6 +2,7 @@
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
 using Abp.Organizations;
 using Abp.UI;
 using Interview.Authorization.Users;
@@ -59,6 +60,31 @@ namespace Interview.OrganizationUnits
             return new ListResultDto<OrganizationUnitDto>(organizationUnits.MapTo<List<OrganizationUnitDto>>());
         }
 
+        [UnitOfWork] // https://forum.aspnetboilerplate.com/viewtopic.php?p=6247
+        public async Task AddUsersToOrganizationUnit(AddUsersToOrganizationUnitDto input)
+        {
+            var ou = await _repository.FirstOrDefaultAsync(input.OrganizationUnitId);
+            if (ou == null)
+            {
+                throw new UserFriendlyException("Could not found the organization unit, maybe it's deleted.");
+            }
+            foreach (var userId in input.UserIds)
+            {
+                await _userManagerInOrganizationUnit.AddUserToOrganizationUnitAsync(userId, input.OrganizationUnitId);
+            }
+        }
+
+        public async Task DeleteUserFromOrganizationUnit(DeleteUserFromOrganizationUnitDto input)
+        {
+            var userOrganizationUnit = await _userManagerInOrganizationUnit
+                                        .FindUserOrganizationUnitAsync(input.TenantId, input.UserId, input.OrganizationUnitId);
+            if(userOrganizationUnit == null)
+            {
+                throw new UserFriendlyException("Could not found the user, maybe it's deleted.");
+            }
+            await _userManagerInOrganizationUnit.DeleteUserFromOrganizationUnitAsync(userOrganizationUnit.Id);
+        }
+
         public async Task<List<TreeItem<OrganizationUnitDto>>> GetTreeList()
         {
             var organizationUnits = _repository
@@ -86,18 +112,18 @@ namespace Interview.OrganizationUnits
 
         public async Task<PagedResultDto<UserDto>> GetUsersInOrganizationUnit(PagedUsersInOrganizationUnitRequestDto input)
         {
-            var users = await _userManagerInOrganizationUnit.GetUsersInOrganizationUnitAsync(input, input.OrganizationUnitId);
+            var users = await _userManagerInOrganizationUnit.GetUsersInOrganizationUnitWithPageAsync(input, input.OrganizationUnitId);
             return new PagedResultDto<UserDto>(
-                users.Count,
+                await _userManagerInOrganizationUnit.GetUsersInOrganizationUnitCountAsync(input.OrganizationUnitId),
                 new List<UserDto>(users.MapTo<List<UserDto>>())
             );
         }
 
         public async Task<PagedResultDto<UserDto>> GetUsersNotInOrganizationUnit(PagedUsersInOrganizationUnitRequestDto input)
         {
-            var users = await _userManagerInOrganizationUnit.GetUsersNotInOrganizationUnitAsync(input, input.OrganizationUnitId);
+            var users = await _userManagerInOrganizationUnit.GetUsersNotInOrganizationUnitWithPageAsync(input, input.OrganizationUnitId);
             return new PagedResultDto<UserDto>(
-                users.Count,
+                await _userManagerInOrganizationUnit.GetUsersNotInOrganizationUnitCountAsync(input.OrganizationUnitId),
                 new List<UserDto>(users.MapTo<List<UserDto>>())
             );
         }

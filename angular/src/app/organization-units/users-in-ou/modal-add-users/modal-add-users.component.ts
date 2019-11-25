@@ -4,6 +4,7 @@ import { UserDto } from '@shared/service-proxies/service-proxies';
 import { OrganizationUnitService } from '@app/organization-units/services/organization-unit.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { finalize } from 'rxjs/operators';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-modal-add-users',
@@ -13,7 +14,7 @@ import { finalize } from 'rxjs/operators';
 export class ModalAddUsersComponent extends PagedListingComponentBase<UserDto> {
 
   users: UserDto[] = [];
-
+  selection = new SelectionModel<UserDto>(true, []);
   constructor(injector: Injector,
     private _organizationUnitService: OrganizationUnitService,
     private _dialogRef: MatDialogRef<ModalAddUsersComponent>,
@@ -34,7 +35,7 @@ export class ModalAddUsersComponent extends PagedListingComponentBase<UserDto> {
       )
       .subscribe((response) => {
         this.users = response.result.items;
-        this.showPaging(response, pageNumber);
+        this.showPaging(response.result, pageNumber);
       });
   }
 
@@ -42,7 +43,30 @@ export class ModalAddUsersComponent extends PagedListingComponentBase<UserDto> {
     this._dialogRef.close(result);
   }
 
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.users.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.users.forEach(row => this.selection.select(row));
+  }
+
+  addUsers() {
+    debugger;
+    const userIds = this.selection.selected.map(({ id }) => id);
+    this._organizationUnitService.addUsersInOu(userIds, this.data.organizationUnitId)
+      .subscribe((response) => {
+        this.close(false);
+      });
+  }
+
   protected delete(entity: UserDto): void {
-    throw new Error('Method not implemented.');
+    
   }
 }

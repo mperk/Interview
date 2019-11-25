@@ -1,9 +1,15 @@
-<div class="modal-dialog modal-md">
+<div class="modal-dialog modal-lg">
     <h1 mat-dialog-title>{{ "Select users" | localize }}</h1>
     <mat-dialog-content>
         <table class="table table-hover table-striped" [busy]="isTableLoading">
             <thead>
                 <tr>
+                    <th>
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        </mat-checkbox>
+                    </th>
                     <th>{{ "FullName" | localize }}</th>
                     <th>{{ "EmailAddress" | localize }}</th>
                 </tr>
@@ -19,6 +25,11 @@
                                 totalItems: totalItems
                               })
                       ">
+                    <td>
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(user) : null" [checked]="selection.isSelected(user)">
+                        </mat-checkbox>
+                    </td>
                     <td>{{ user.fullName }}</td>
                     <td>{{ user.emailAddress }}</td>
                 </tr>
@@ -33,9 +44,8 @@
         <button mat-button type="button" [disabled]="saving" (click)="close(false)">
             {{ "Cancel" | localize }}
         </button>
-        <!-- <button mat-flat-button type="submit" flex="15" color="primary"
-            [disabled]="!createOrganizationUnitForm.form.valid || saving">
+        <button mat-button type="button" color="primary" [disabled]="selection.selected.length < 1" (click)="addUsers()">
             {{ "Save" | localize }}
-        </button> -->
+        </button>
     </div>
 </div>

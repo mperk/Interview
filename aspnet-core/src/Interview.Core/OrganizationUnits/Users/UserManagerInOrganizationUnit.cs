@@ -23,43 +23,68 @@ namespace Interview.OrganizationUnits.Users
             _userRepository = userRepository;
         }
 
-        public async Task<List<User>> GetUsersInOrganizationUnitAsync(PagedResultRequestDto paged, long organizationUnitId)
+        public async Task<UserOrganizationUnit> AddUserToOrganizationUnitAsync(long userId, long organizationUnitId)
+        {
+            return await _userOrganizationUnitRepository.InsertAsync(new UserOrganizationUnit() { OrganizationUnitId = organizationUnitId, UserId = userId });
+        }
+
+        public async Task<UserOrganizationUnit> FindUserOrganizationUnitAsync(int? tenantId, long userId, long organizationUnitId)
+        {
+            return await _userOrganizationUnitRepository.FirstOrDefaultAsync(x => 
+                        x.TenantId == tenantId &&
+                        x.UserId == userId &&
+                        x.OrganizationUnitId == organizationUnitId);
+        }
+
+        public async Task DeleteUserFromOrganizationUnitAsync(long id)
+        {
+            await _userOrganizationUnitRepository.DeleteAsync(id);
+        }
+
+        public async Task<IEnumerable<User>> GetUsersInOrganizationUnitAsync(long organizationUnitId)
         {
             var users = (await _userOrganizationUnitRepository.GetAllListAsync())
                 .Where(x => x.OrganizationUnitId == organizationUnitId)
-                .Join(await _userRepository.GetAllListAsync(), ou => ou.UserId, user => user.Id, (ou, user) => user)
-                .Skip(paged.SkipCount)
-                .Take(paged.MaxResultCount);
+                .Join(await _userRepository.GetAllListAsync(), ou => ou.UserId, user => user.Id, (ou, user) => user);
+            return users;
+        }
+
+        public async Task<List<User>> GetUsersInOrganizationUnitWithPageAsync(PagedResultRequestDto paged, long organizationUnitId)
+        {
+            var users = (await GetUsersInOrganizationUnitAsync(organizationUnitId))
+                        .Skip(paged.SkipCount)
+                        .Take(paged.MaxResultCount);
             return users.ToList();
         }
 
-        public async Task<List<User>> GetUsersNotInOrganizationUnitAsync(PagedResultRequestDto paged, long organizationUnitId)
+        public async Task<int> GetUsersInOrganizationUnitCountAsync(long organizationUnitId)
+        {
+            return (await GetUsersInOrganizationUnitAsync(organizationUnitId)).Count();
+        }
+
+        public async Task<IEnumerable<User>> GetUsersNotInOrganizationUnitAsync(long organizationUnitId)
         {
             var users = (await _userRepository.GetAllListAsync())
                         .Except(
                                 (await _userOrganizationUnitRepository.GetAllListAsync())
                                 .Where(x => x.OrganizationUnitId == organizationUnitId)
                                 .Join(await _userRepository.GetAllListAsync(), ou => ou.UserId, u => u.Id, (ou, user) => user)
-                                )
+                                );
+            return users;
+        }
+
+        public async Task<List<User>> GetUsersNotInOrganizationUnitWithPageAsync(PagedResultRequestDto paged, long organizationUnitId)
+        {
+            var users = (await GetUsersNotInOrganizationUnitAsync(organizationUnitId))
                         .Skip(paged.SkipCount)
                         .Take(paged.MaxResultCount);
             return users.ToList();
         }
 
-        //public async Task<List<User>> AddUserInOrganizationUnit()
-        //{
-        //    var users = (await _userOrganizationUnitRepository
-        //        .GetAllListAsync())
-        //        .Join(_userRepository.GetAll(), ou => ou.UserId, u => u.Id, (ou, user) => user);
-        //    return users.ToList();
-        //}
+        public async Task<int> GetUsersNotInOrganizationUnitCountAsync(long organizationUnitId)
+        {
+            return (await GetUsersNotInOrganizationUnitAsync(organizationUnitId)).Count();
+        }
 
-        //public async Task<List<User>> DeleteUserInOrganizationUnit()
-        //{
-        //    var users = (await _userOrganizationUnitRepository
-        //        .GetAllListAsync())
-        //        .Join(_userRepository.GetAll(), ou => ou.UserId, u => u.Id, (ou, user) => user);
-        //    return users.ToList();
-        //}
     }
 }

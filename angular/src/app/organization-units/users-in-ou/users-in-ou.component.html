@@ -7,6 +7,7 @@
             <th>{{ "UserName" | localize }}</th>
             <th>{{ "FullName" | localize }}</th>
             <th>{{ "EmailAddress" | localize }}</th>
+            <th>{{ "Actions" | localize }}</th>
         </tr>
     </thead>
     <tbody>
@@ -23,6 +24,11 @@
             <td>{{ user.userName }}</td>
             <td>{{ user.fullName }}</td>
             <td>{{ user.emailAddress }}</td>
+            <td>
+                <button type="button" class="btn btn-danger waves-effect" (click)="delete(user)">
+                    <span>{{ "Delete" | localize }}</span>
+                </button>
+            </td>
         </tr>
     </tbody>
 </table>

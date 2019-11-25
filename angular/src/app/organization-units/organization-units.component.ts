@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, ViewChild } from '@angular/core';
+import { Component, OnInit, Injector, ViewChild, EventEmitter, Output } from '@angular/core';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listing-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { OrganizationUnitDto } from './models/organizationUnitDto';
@@ -8,6 +8,7 @@ import { OrganizationUnitService } from './services/organization-unit.service';
 import { AppComponentBase } from '@shared/app-component-base';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { UserDto, PagedResultDtoOfUserDto } from '@shared/service-proxies/service-proxies';
+import { ModalAddUsersComponent } from './users-in-ou/modal-add-users/modal-add-users.component';
 
 @Component({
   selector: 'app-organization-units',
@@ -26,11 +27,11 @@ export class OrganizationUnitsComponent extends AppComponentBase {
   hasChild = (_: number, node: OrganizationUnitDto) => !!node.children && node.children.length > 0;
   @ViewChild(MatMenuTrigger, { static: true }) contextMenu: MatMenuTrigger;
   contextMenuPosition = { x: '0px', y: '0px' };
+  @Output() getUsersEvent = new EventEmitter(); // get users component
   constructor(
     injector: Injector,
     private _dialog: MatDialog,
-    private _organizationUnitService: OrganizationUnitService,
-
+    private _organizationUnitService: OrganizationUnitService
   ) {
     super(injector);
   }
@@ -103,6 +104,7 @@ export class OrganizationUnitsComponent extends AppComponentBase {
   }
 
   getUsersInOrganizationUnit(node) {
+    // this.getUsersEvent.emit(null);
     this.selectedOrganizationUnit = node.item;
     const req = new PagedRequestDto();
     req.maxResultCount = 10;
