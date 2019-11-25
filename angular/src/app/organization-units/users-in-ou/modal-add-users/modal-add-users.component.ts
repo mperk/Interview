@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, Input, Inject, Optional } from '@angular/core';
+import { Component, OnInit, Injector, Input, Inject, Optional, Output, EventEmitter } from '@angular/core';
 import { PagedListingComponentBase, PagedRequestDto } from 'shared/paged-listing-component-base';
 import { UserDto } from '@shared/service-proxies/service-proxies';
 import { OrganizationUnitService } from '@app/organization-units/services/organization-unit.service';
@@ -15,6 +15,7 @@ export class ModalAddUsersComponent extends PagedListingComponentBase<UserDto> {
 
   users: UserDto[] = [];
   selection = new SelectionModel<UserDto>(true, []);
+  @Output() eventAfterSave: EventEmitter<any> = new EventEmitter<any>();
   constructor(injector: Injector,
     private _organizationUnitService: OrganizationUnitService,
     private _dialogRef: MatDialogRef<ModalAddUsersComponent>,
@@ -58,11 +59,10 @@ export class ModalAddUsersComponent extends PagedListingComponentBase<UserDto> {
   }
 
   addUsers() {
-    debugger;
     const userIds = this.selection.selected.map(({ id }) => id);
     this._organizationUnitService.addUsersInOu(userIds, this.data.organizationUnitId)
       .subscribe((response) => {
-        this.close(false);
+        this.close(true);
       });
   }
 
