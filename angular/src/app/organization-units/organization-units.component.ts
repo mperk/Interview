@@ -7,7 +7,7 @@ import { ModalOuComponent } from './modal-ou/modal-ou.component';
 import { OrganizationUnitService } from './services/organization-unit.service';
 import { AppComponentBase } from '@shared/app-component-base';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { UserDto } from '@shared/service-proxies/service-proxies';
+import { UserDto, PagedResultDtoOfUserDto } from '@shared/service-proxies/service-proxies';
 
 @Component({
   selector: 'app-organization-units',
@@ -108,11 +108,10 @@ export class OrganizationUnitsComponent extends AppComponentBase {
     req.maxResultCount = 10;
     req.skipCount = 0;
 
-    this._organizationUnitService.getUsers(req, node.item.id)
+    this._organizationUnitService.getUsersInOu(req, node.item.id)
       .subscribe((response) => {
-        this.users = response.result;
+        this.users = response.result.items;
         this.usersTableStatus = true;
       });
-
   }
 }

@@ -101,7 +101,8 @@ import { ModalAddUsersComponent } from './organization-units/users-in-ou/modal-a
     EditUserDialogComponent,
     ResetPasswordDialogComponent,
     // organization units
-    ModalOuComponent
+    ModalOuComponent,
+    ModalAddUsersComponent
   ]
 })
 export class AppModule {}

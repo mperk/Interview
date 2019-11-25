@@ -32,16 +32,18 @@ export class OrganizationUnitService {
     }
 
     delete(id: number): Observable<any> {
-        return this.http.delete('/api/services/app/OrganizationUnit/Delete?id='+id);
+        return this.http.delete('/api/services/app/OrganizationUnit/Delete?id=' + id);
     }
 
     addSubUnit(displayName: string, parentId: number): Observable<any> {
         return this.create(displayName, parentId);
     }
 
-    getUsers(input, id: number): Observable<any> {
-        return this.http.get('/api/services/app/OrganizationUnit/GetUsersInOrganizationUnit?id='+id, {
-            body: {input: input}
-        });
+    getUsersInOu(req, id: number): Observable<any> {
+        return this.http.get('/api/services/app/OrganizationUnit/GetUsersInOrganizationUnit?SkipCount=' + req.skipCount + '&MaxResultCount=' + req.maxResultCount + '&OrganizationUnitId='+id);
+    }
+
+    getUsersNotInOu(req, id: number): Observable<any> {
+        return this.http.get('/api/services/app/OrganizationUnit/GetUsersNotInOrganizationUnit?SkipCount=' + req.skipCount + '&MaxResultCount=' + req.maxResultCount + '&OrganizationUnitId='+id);
     }
 }

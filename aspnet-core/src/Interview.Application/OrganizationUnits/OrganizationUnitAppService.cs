@@ -67,7 +67,7 @@ namespace Interview.OrganizationUnits
                 .OrderBy(x => x.Code)
                 .AsEnumerable();
             var organizationUnitTree = organizationUnits.GenerateTree(x => x.Id, x => x.ParentId).ToList();
-            var result= new List<TreeItem<OrganizationUnitDto>>(organizationUnitTree.MapTo<List<TreeItem<OrganizationUnitDto>>>());
+            var result = new List<TreeItem<OrganizationUnitDto>>(organizationUnitTree.MapTo<List<TreeItem<OrganizationUnitDto>>>());
             return result;
         }
 
@@ -84,10 +84,22 @@ namespace Interview.OrganizationUnits
             return organizationUnit.MapTo<OrganizationUnitDto>();
         }
 
-        public async Task<List<UserDto>> GetUsersInOrganizationUnit(PagedUsersInOrganizationUnitRequestDto input)
+        public async Task<PagedResultDto<UserDto>> GetUsersInOrganizationUnit(PagedUsersInOrganizationUnitRequestDto input)
         {
-            var users = await _userManagerInOrganizationUnit.GetUsersInOrganizationUnitAsync(input, input.organizationUnitId);
-            return ObjectMapper.Map<List<UserDto>>(users);
+            var users = await _userManagerInOrganizationUnit.GetUsersInOrganizationUnitAsync(input, input.OrganizationUnitId);
+            return new PagedResultDto<UserDto>(
+                users.Count,
+                new List<UserDto>(users.MapTo<List<UserDto>>())
+            );
+        }
+
+        public async Task<PagedResultDto<UserDto>> GetUsersNotInOrganizationUnit(PagedUsersInOrganizationUnitRequestDto input)
+        {
+            var users = await _userManagerInOrganizationUnit.GetUsersNotInOrganizationUnitAsync(input, input.OrganizationUnitId);
+            return new PagedResultDto<UserDto>(
+                users.Count,
+                new List<UserDto>(users.MapTo<List<UserDto>>())
+            );
         }
 
         public async Task MoveAsync(long id, long? parentId)

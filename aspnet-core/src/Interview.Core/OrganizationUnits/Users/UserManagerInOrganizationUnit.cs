@@ -33,12 +33,16 @@ namespace Interview.OrganizationUnits.Users
             return users.ToList();
         }
 
-        public async Task<List<User>> GetUsersNotInOrganizationUnitAsync(long organizationUnitId)
+        public async Task<List<User>> GetUsersNotInOrganizationUnitAsync(PagedResultRequestDto paged, long organizationUnitId)
         {
-            var users = (await _userOrganizationUnitRepository.GetAllListAsync())
-                .Where(x => x.OrganizationUnitId == organizationUnitId)
-                .Join(await _userRepository.GetAllListAsync(), ou => ou.UserId, u => u.Id, (ou, user) => user)
-                .Except(await _userRepository.GetAllListAsync());
+            var users = (await _userRepository.GetAllListAsync())
+                        .Except(
+                                (await _userOrganizationUnitRepository.GetAllListAsync())
+                                .Where(x => x.OrganizationUnitId == organizationUnitId)
+                                .Join(await _userRepository.GetAllListAsync(), ou => ou.UserId, u => u.Id, (ou, user) => user)
+                                )
+                        .Skip(paged.SkipCount)
+                        .Take(paged.MaxResultCount);
             return users.ToList();
         }
 

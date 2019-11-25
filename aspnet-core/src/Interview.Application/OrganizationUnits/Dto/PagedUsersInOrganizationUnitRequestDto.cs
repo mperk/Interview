@@ -4,7 +4,7 @@ namespace Interview.OrganizationUnits.Dto
 {
     public class PagedUsersInOrganizationUnitRequestDto : PagedResultRequestDto
     {
-        public long organizationUnitId { get; set; }
+        public long OrganizationUnitId { get; set; }
     }
 }
 

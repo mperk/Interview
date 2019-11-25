@@ -100,17 +100,10 @@ namespace Interview.OrganizationUnits
             await _organizationUnitRepository.UpdateAsync(organizationUnit);
         }
 
-        public async Task<List<OrganizationUnit>> FindChildrenAsync(long? id)
+        public async Task<List<OrganizationUnit>> FindChildrenAsync(long id)
         {
-            if (!id.HasValue)
-            {
-                return await _organizationUnitRepository.GetAllListAsync(x => x.ParentId == id);
-            }
-            else
-            {
-                var parentCode = await GetCodeOrDefaultAsync(id.Value);
-                return await _organizationUnitRepository.GetAllListAsync(x => x.Code.StartsWith(parentCode) && x.Id != id.Value);
-            }
+            var parentCode = await GetCodeOrDefaultAsync(id);
+            return await _organizationUnitRepository.GetAllListAsync(x => x.Code.StartsWith(parentCode) && x.Id != id);
         }
     }
 }

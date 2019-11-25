@@ -10,6 +10,6 @@ namespace Interview.OrganizationUnits.Users
     {
         Task<List<User>> GetUsersInOrganizationUnitAsync(PagedResultRequestDto paged, long organizationUnitId);
 
-        Task<List<User>> GetUsersNotInOrganizationUnitAsync(long organizationUnitId);
+        Task<List<User>> GetUsersNotInOrganizationUnitAsync(PagedResultRequestDto paged, long organizationUnitId);
     }
 }
