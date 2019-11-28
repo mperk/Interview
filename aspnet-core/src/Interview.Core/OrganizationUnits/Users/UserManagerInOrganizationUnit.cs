@@ -43,54 +43,52 @@ namespace Interview.OrganizationUnits.Users
 
         public async Task<List<UserOrganizationUnit>> FindUserOrganizationUnitsAsync(long organizationUnitId)
         {
-            return (await _userOrganizationUnitRepository.GetAllListAsync())
-                .Where(x => x.OrganizationUnitId == organizationUnitId)
-                .ToList();
+            return await _userOrganizationUnitRepository.GetAllListAsync(x => x.OrganizationUnitId == organizationUnitId);
         }
 
-        public async Task<IEnumerable<User>> GetUsersInOrganizationUnitAsync(long organizationUnitId)
+        public IQueryable<User> GetUsersInOrganizationUnit(long organizationUnitId)
         {
-            var users = (await _userOrganizationUnitRepository.GetAllListAsync())
+            var users = _userOrganizationUnitRepository.GetAll()
                 .Where(x => x.OrganizationUnitId == organizationUnitId)
-                .Join(await _userRepository.GetAllListAsync(), ou => ou.UserId, user => user.Id, (ou, user) => user);
+                .Join(_userRepository.GetAll(), ou => ou.UserId, user => user.Id, (ou, user) => user);
             return users;
         }
 
-        public async Task<List<User>> GetUsersInOrganizationUnitWithPageAsync(PagedResultRequestDto paged, long organizationUnitId)
+        public List<User> GetUsersInOrganizationUnitWithPage(PagedResultRequestDto paged, long organizationUnitId)
         {
-            var users = (await GetUsersInOrganizationUnitAsync(organizationUnitId))
+            var users = GetUsersInOrganizationUnit(organizationUnitId)
                         .Skip(paged.SkipCount)
                         .Take(paged.MaxResultCount);
             return users.ToList();
         }
 
-        public async Task<int> GetUsersInOrganizationUnitCountAsync(long organizationUnitId)
+        public int GetUsersInOrganizationUnitCount(long organizationUnitId)
         {
-            return (await GetUsersInOrganizationUnitAsync(organizationUnitId)).Count();
+            return GetUsersInOrganizationUnit(organizationUnitId).Count();
         }
 
-        public async Task<IEnumerable<User>> GetUsersNotInOrganizationUnitAsync(long organizationUnitId)
+        public IQueryable<User> GetUsersNotInOrganizationUnit(long organizationUnitId)
         {
-            var users = (await _userRepository.GetAllListAsync())
+            var users = _userRepository.GetAll()
                         .Except(
-                                (await _userOrganizationUnitRepository.GetAllListAsync())
+                                (_userOrganizationUnitRepository.GetAll())
                                 .Where(x => x.OrganizationUnitId == organizationUnitId)
-                                .Join(await _userRepository.GetAllListAsync(), ou => ou.UserId, u => u.Id, (ou, user) => user)
+                                .Join(_userRepository.GetAll(), ou => ou.UserId, u => u.Id, (ou, user) => user)
                                 );
             return users;
         }
 
-        public async Task<List<User>> GetUsersNotInOrganizationUnitWithPageAsync(PagedResultRequestDto paged, long organizationUnitId)
+        public List<User> GetUsersNotInOrganizationUnitWithPage(PagedResultRequestDto paged, long organizationUnitId)
         {
-            var users = (await GetUsersNotInOrganizationUnitAsync(organizationUnitId))
+            var users = GetUsersNotInOrganizationUnit(organizationUnitId)
                         .Skip(paged.SkipCount)
                         .Take(paged.MaxResultCount);
             return users.ToList();
         }
 
-        public async Task<int> GetUsersNotInOrganizationUnitCountAsync(long organizationUnitId)
+        public int GetUsersNotInOrganizationUnitCount(long organizationUnitId)
         {
-            return (await GetUsersNotInOrganizationUnitAsync(organizationUnitId)).Count();
+            return GetUsersNotInOrganizationUnit(organizationUnitId).Count();
         }
 
     }

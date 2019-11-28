@@ -3,6 +3,7 @@ using Abp.Authorization.Users;
 using Abp.Domain.Services;
 using Interview.Authorization.Users;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Interview.OrganizationUnits.Users
@@ -17,16 +18,16 @@ namespace Interview.OrganizationUnits.Users
 
         Task<List<UserOrganizationUnit>> FindUserOrganizationUnitsAsync(long organizationUnitId);
 
-        Task<IEnumerable<User>> GetUsersInOrganizationUnitAsync(long organizationUnitId);
+        IQueryable<User> GetUsersInOrganizationUnit(long organizationUnitId);
 
-        Task<List<User>> GetUsersInOrganizationUnitWithPageAsync(PagedResultRequestDto paged, long organizationUnitId);
+        List<User> GetUsersInOrganizationUnitWithPage(PagedResultRequestDto paged, long organizationUnitId);
 
-        Task<int> GetUsersInOrganizationUnitCountAsync(long organizationUnitId);
+        int GetUsersInOrganizationUnitCount(long organizationUnitId);
 
-        Task<IEnumerable<User>> GetUsersNotInOrganizationUnitAsync(long organizationUnitId);
+        IQueryable<User> GetUsersNotInOrganizationUnit(long organizationUnitId);
 
-        Task<List<User>> GetUsersNotInOrganizationUnitWithPageAsync(PagedResultRequestDto paged, long organizationUnitId);
+        List<User> GetUsersNotInOrganizationUnitWithPage(PagedResultRequestDto paged, long organizationUnitId);
 
-        Task<int> GetUsersNotInOrganizationUnitCountAsync(long organizationUnitId);
+        int GetUsersNotInOrganizationUnitCount(long organizationUnitId);
     }
 }
